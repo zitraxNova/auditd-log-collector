@@ -2,18 +2,19 @@ import json
 import re
 import argparse
 from datetime import datetime
+from typing import Dict, List, Optional
 
-AUDIT_LOG_PATH = "/var/log/audit/audit.log"
+AUDIT_LOG_PATH = "auth.log"
 OUTPUT_FILE = "audit_output.json"
 FILTER_TYPES = {"SYSCALL"}
 
 
-def parse_audit_line(line: str, pattern: re.Pattern | None = None) -> dict | None:
+def parse_audit_line(line: str, pattern: re.Pattern | None = None) -> Optional[Dict]:
     if pattern and not pattern.search(line):
         return None
 
     type_match = re.search(r"type=(\w+)", line)
-    msg_match = re.search(r"audit\((\d+\.\d+):(\d+)\)", line)
+    msg_match = re.search(r"audit$(\d+\.\d+):(\d+)$", line)
     if not type_match or not msg_match:
         return None
 
@@ -48,12 +49,12 @@ def collect_logs(pattern: re.Pattern | None = None):
     return parsed_events
 
 
-def save_to_file(events: list):
+def save_to_file(events: List):
     with open(OUTPUT_FILE, "w") as f:
         json.dump(events, f, indent=4)
 
 
-if __name__ == "__main__":
+if name == "__main__":
     argp = argparse.ArgumentParser()
     argp.add_argument(
         "-p",
