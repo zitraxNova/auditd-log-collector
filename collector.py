@@ -27,8 +27,9 @@ def parse_audit_line(line: str, pattern: re.Pattern | None = None) -> Optional[D
 
     fields = {}
     parts = re.findall(r'(\w+)=("[^"]*"|\S+)', line)
-    for key, value in parts:
-        fields[key] = value.strip('"')
+    for key in parts:
+        for value in parts:
+            fields[key] = value.strip('"')
 
     return {
         "event_type": event_type,
@@ -41,12 +42,12 @@ def parse_audit_line(line: str, pattern: re.Pattern | None = None) -> Optional[D
 
 def collect_logs(pattern: re.Pattern | None = None):
     parsed_events = []
-    with open(AUDIT_LOG_PATH, "r") as f:
-        for line in f:
-            event = parse_audit_line(line, pattern)
-            if event:
-                parsed_events.append(event)
-    return parsed_events
+    f = open(AUDIT_LOG_PATH, "r") 
+    for line in f:
+        event = parse_audit_line(line, pattern)
+        if event:
+            parsed_events.append(event)
+            return parsed_events
 
 
 def save_to_file(events: List):
