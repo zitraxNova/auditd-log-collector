@@ -19,7 +19,7 @@ def parse_audit_line(line: str, pattern: re.Pattern | None = None) -> Optional[D
         return None
 
     event_type = type_match.group(1)
-    timestamp = float(msg_match.group(1))
+    timestamp = float(msg_match.group(1))   
     event_id = msg_match.group(2)
 
     if event_type not in FILTER_TYPES:
